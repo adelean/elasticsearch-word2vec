@@ -1,0 +1,247 @@
+group = 'com.adelean'
+version = '0.1.0-SNAPSHOT'
+
+def ES_VERSION = '6.5.4'
+def DP4J_VERSION = '1.0.0-beta6'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        mavenLocal()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+
+    dependencies {
+        classpath 'gradle.plugin.com.dorongold.plugins:task-tree:1.4'
+        classpath 'gradle.plugin.services.bst:weave-dependencies:0.1.5'
+        classpath 'org.elasticsearch.gradle:build-tools:6.5.4'
+//        classpath 'com.palantir.docker:com.palantir.docker.gradle.plugin:0.24.0'
+    }
+}
+
+apply plugin: 'com.dorongold.task-tree'
+apply plugin: 'java'
+apply plugin: 'services.bst.weave-dependencies'
+apply plugin: 'idea'
+apply plugin: 'elasticsearch.esplugin'
+//apply plugin: 'com.palantir.docker'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+weaveDependencies {
+    aspectJVersion = '1.9.5'
+    classesToExclude = []
+    ajcXlint = 'ignore'
+}
+
+//docker {
+//    name 'adelean/elasticsearch-word2vec'
+//}
+
+def aspectsConfig = project.configurations.getByName('aspects')
+def weaveConfig = project.configurations.getByName('weave')
+project.configurations.getByName('compile').setExtendsFrom([])
+project.configurations.getByName('implementation').extendsFrom(aspectsConfig, weaveConfig)
+
+project.afterEvaluate {
+    def preweaveDeps = getDirectPaths(aspectsConfig)
+
+    project.sourceSets.each { SourceSet sourceSet ->
+        sourceSet.runtimeClasspath = sourceSet.runtimeClasspath.filter {
+            !preweaveDeps.contains(it.absolutePath)
+        }
+
+        sourceSets.test.runtimeClasspath = sourceSets.test.runtimeClasspath.filter {
+            !preweaveDeps.contains(it.absolutePath)
+        }
+    }
+
+    def jarHellTask = project.tasks.getByName('jarHell');
+    jarHellTask.classpath = project.sourceSets.test.runtimeClasspath
+}
+
+project.tasks.getByName('bundlePlugin').dependsOn(project.tasks.getByName('jarHell'))
+
+private Set<String> getDirectPaths(Configuration config) {
+    Set<String> depSet = [] as Set
+    config.resolvedConfiguration.firstLevelModuleDependencies.each { ResolvedDependency topDependency ->
+        topDependency.moduleArtifacts.each { ResolvedArtifact artifact ->
+            depSet.add(artifact.file.absolutePath)
+        }
+    }
+    return depSet
+}
+
+ext {
+    licenseFile = rootProject.file('LICENSE')
+    noticeFile = rootProject.file('NOTICE')
+}
+
+esplugin {
+    name 'word2vec'
+    description 'Makes use of word2vec in Elasticsearch'
+    classname 'com.adelean.elasticsearch.word2vec.Word2VecPlugin'
+}
+
+forbiddenApisMain.enabled = false
+licenseHeaders.enabled = false
+dependencyLicenses.enabled = false
+thirdPartyAudit.enabled = false
+javadoc.enabled = false
+checkstyleMain.enabled = false
+
+// TODO: write tests and enable
+test.enabled = false
+integTestRunner.enabled = false
+
+def transitiveDependenciesGroups = [ 'org.deeplearning4j', 'org.nd4j' ] as String[]
+def mandatoryDependenciesGroups = [ 'org.aspectj' ] as String[]
+
+/* Disable compile failure on warnings */
+project.afterEvaluate {
+    project.tasks.withType(JavaCompile).configureEach({ JavaCompile compileTask ->
+        options.compilerArgs.remove('-Werror')
+    })
+}
+
+/* Solve conflicting dependencies */
+project.configurations.all({ Configuration configuration ->
+    configuration.resolutionStrategy {
+        preferProjectModules()
+    }
+})
+
+Closure isMandatoryDependency = { File file ->
+    def nameParts = file.absolutePath.split('/')
+    return nameParts
+            .find({ part ->
+                mandatoryDependenciesGroups.contains(part)
+            }) != null;
+}
+
+Closure enableTransitive = { Dependency dependency ->
+    def isTransitiveDependency = transitiveDependenciesGroups.any(dependency.group.&equalsIgnoreCase)
+    if (isTransitiveDependency) {
+        // Must be inside 'if' block to not disable transitivity of other dependencies
+        dependency.transitive = true
+    }
+}
+
+Closure disableTransitive = { Dependency dependency ->
+    dependency.transitive = false
+}
+
+String dequalify(String jarName) {
+    def tokens = jarName.replace('.jar', '').split('-')
+
+    String names = '';
+    String versions = '';
+
+    for (token in tokens) {
+        if (token.matches('\\d+\\.\\d+(\\.\\d+)?') || token.matches('(alpha|beta)\\d+')) {
+            versions += '-' + token
+        } else {
+            names += (names.isEmpty() ? '' : '-') + token
+        }
+    }
+
+    return names + versions + '.jar';
+}
+
+void addImplementationDependencies(Project project) {
+    def implementationDependencies = (project.configurations.runtimeClasspath
+            - project.configurations.compileOnly
+            - project.configurations.aspects
+            - project.configurations.weave)
+
+    implementationDependencies
+        .forEach { dependency ->
+            def newName = dequalify(dependency.name)
+
+            project
+                    .bundlePlugin
+                    .from(dependency)
+                    .rename(dependency.name, newName)
+        }
+}
+
+void addMandatoryDependencies(Project project, Closure isMandatoryDependency) {
+    project
+            .configurations
+            .runtimeClasspath
+            .findAll(isMandatoryDependency)
+            .forEach { dependency ->
+                project.bundlePlugin.from(dependency)
+            }
+}
+
+void addWeavedDependencies(Project project) {
+    project.bundlePlugin.from('${project.buildDir}/weaved-libs/weaveDependencies') {
+        include '*.jar'
+    }
+}
+
+project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME).dependencies.all(enableTransitive)
+project.configurations.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).dependencies.all(enableTransitive)
+project.configurations.getByName('aspects').dependencies.all(disableTransitive)
+project.configurations.getByName('weave').dependencies.all(disableTransitive)
+
+dependencies {
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: ES_VERSION
+    implementation(group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: DP4J_VERSION) {
+        exclude group: 'org.deeplearning4j', module: 'deeplearning4j-tsne'
+        exclude group: 'org.deeplearning4j', module: 'deeplearning4j-ui-components'
+
+        exclude group: 'org.objenesis'
+        exclude group: 'net.java.dev.jna'
+        exclude group: 'org.nd4j', module: 'nd4j-api'
+        exclude group: 'org.nd4j', module: 'nd4j-jackson'
+
+        exclude group: 'org.datavec', module: 'datavec-data-image'
+        exclude group: 'com.github.vinhkhuc', module: 'jfasttext'
+
+        exclude group: 'net.sf.opencsv', module: 'opencsv'
+        exclude group: 'org.freemarker', module: 'freemarker'
+        exclude group: 'org.threadly', module: 'threadly'
+        exclude group: 'org.lucee', module: 'oswego-concurrent'
+
+        exclude group: 'org.bytedeco', module: 'hdf5-platform'
+        exclude group: 'org.bytedeco', module: 'opencv'
+    }
+    implementation(group: 'org.nd4j', name: 'nd4j-native-platform', version: DP4J_VERSION) {
+        exclude group: 'org.objenesis'
+        exclude group: 'net.java.dev.jna'
+        exclude group: 'org.nd4j', module: 'nd4j-api'
+
+        exclude group: 'org.bytedeco', module: 'opencv'
+        exclude group: 'org.bytedeco', module: 'leptonica'
+        exclude group: 'org.bytedeco', module: 'mkl-platform'
+    }
+
+    aspects project(':aspects')
+    weave group: 'org.nd4j', name: 'nd4j-context', version: DP4J_VERSION
+    weave(group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
+        exclude group: 'org.objenesis'
+        exclude group: 'net.java.dev.jna'
+        exclude group: 'org.nd4j', module: 'nd4j-context'
+    }
+
+    testCompileOnly group: 'org.elasticsearch.test', name: 'framework', version: ES_VERSION
+
+}
+
+addImplementationDependencies(project)
+addWeavedDependencies(project)
+addMandatoryDependencies(project, isMandatoryDependency)

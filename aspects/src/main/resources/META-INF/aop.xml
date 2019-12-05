@@ -1,0 +1,5 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.adelean.elasticsearch.word2vec.aspects.ServiceLoaderAspect" />
+    </aspects>
+</aspectj>

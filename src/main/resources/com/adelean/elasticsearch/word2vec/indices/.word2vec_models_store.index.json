@@ -1,0 +1,26 @@
+{
+    "settings": {
+        "number_of_shards": "1",
+        "number_of_replicas": "0",
+        "auto_expand_replicas": "0-2"
+    },
+    "mappings": {
+        "_doc": {
+            "dynamic": false,
+            "properties": {
+                "model": {
+                    "type": "keyword"
+                },
+                "partNumber": {
+                    "type": "long"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "binary"
+                }
+            }
+        }
+    }
+}

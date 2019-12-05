@@ -1,0 +1,23 @@
+group = 'com.adelean'
+version = '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+apply plugin: 'java'
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '4.4.2.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '4.4.2.Final'
+
+    testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.6.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
+}
