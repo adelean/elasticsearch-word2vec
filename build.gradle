@@ -212,7 +212,7 @@ String dequalify(String jarName) {
     String versions = '';
 
     for (token in tokens) {
-        if (token.matches('\\d+\\.\\d+(\\.\\d+)?') || token.matches('(alpha|beta)\\d+')) {
+        if (token.matches('\\d+\\.\\d+(\\.\\d+)?') || token.matches('(alpha|beta|SNAPSHOT)\\d+')) {
             versions += '-' + token
         } else {
             names += (names.isEmpty() ? '' : '-') + token
