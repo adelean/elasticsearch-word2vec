@@ -2,11 +2,11 @@ package org.deeplearning4j.models.embeddings.reader.impl;
 
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
 import org.deeplearning4j.models.sequencevectors.sequence.SequenceElement;
+import org.nd4j.common.util.SetUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 import org.nd4j.shade.guava.collect.Lists;
-import org.nd4j.util.SetUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,7 +1,13 @@
 package com.adelean.elasticsearch.word2vec.model;
 
-import com.adelean.elasticsearch.word2vec.utils.ScrollInputStream;
-import org.deeplearning4j.models.embeddings.loader.WordVectorSerializerPluginImpl;
+import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivileged;
+
+import java.io.InputStream;
+import java.util.Base64;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
@@ -9,12 +15,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.io.InputStream;
-import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivileged;
+import com.adelean.elasticsearch.word2vec.utils.ScrollInputStream;
 
 public final class ModelLoader {
     private static final String MODELS_INDEX = ".word2vec_models_store";
@@ -36,13 +37,13 @@ public final class ModelLoader {
     private static WordVectorsPluginImpl loadModel(String model) {
         try (InputStream inputStream = new ModelInputStream(model, client)) {
             return executePrivileged(() -> {
-                Word2Vec word2vec = WordVectorSerializerPluginImpl.readAsBinary(inputStream);
+                Word2Vec word2vec = WordVectorSerializer.readAsBinary(inputStream);
                 return new WordVectorsPluginImpl(word2vec);
             });
         } catch (Exception readBinaryException) {
             try (InputStream inputStream = new ModelInputStream(model, client)) {
                 return executePrivileged(() -> {
-                    Word2Vec word2vec = WordVectorSerializerPluginImpl.readAsBinaryNoLineBreaks(inputStream);
+                    Word2Vec word2vec = WordVectorSerializer.readAsBinaryNoLineBreaks(inputStream);
                     return new WordVectorsPluginImpl(word2vec);
                 });
             } catch (Exception readModelException) {

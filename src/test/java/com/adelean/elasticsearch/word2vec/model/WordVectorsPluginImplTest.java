@@ -1,6 +1,6 @@
 package com.adelean.elasticsearch.word2vec.model;
 
-import org.deeplearning4j.models.embeddings.loader.WordVectorSerializerPluginImpl;
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.elasticsearch.common.io.PathUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +62,7 @@ public class WordVectorsPluginImplTest {
                     .toURI();
             Path path = PathUtils.get(uri);
             try (InputStream fileInputStream = Files.newInputStream(path)) {
-                return WordVectorSerializerPluginImpl.readAsBinaryNoLineBreaks(fileInputStream);
+                return WordVectorSerializer.readAsBinaryNoLineBreaks(fileInputStream);
             }
         } catch (Exception modelLoadingException) {
             fail(modelLoadingException.getMessage());

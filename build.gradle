@@ -261,7 +261,7 @@ project.configurations.getByName('aspects').dependencies.all(disableTransitive)
 project.configurations.getByName('weave').dependencies.all(disableTransitive)
 
 def ES_VERSION = '6.5.4'
-def DP4J_VERSION = '1.0.0-beta6'
+def DP4J_VERSION = '1.0.0-beta7'
 def OPENBLAS_VERSION = '0.3.7-1.5.2'
 
 dependencies {
@@ -270,6 +270,7 @@ dependencies {
     implementation(group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: DP4J_VERSION) {
         exclude group: 'org.deeplearning4j', module: 'deeplearning4j-tsne'
         exclude group: 'org.deeplearning4j', module: 'deeplearning4j-ui-components'
+        exclude group: 'org.deeplearning4j', module: 'deeplearning4j-util'
 
         exclude group: 'org.objenesis'
         exclude group: 'net.java.dev.jna'
@@ -320,7 +321,6 @@ dependencies {
     implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'macosx-x86_64'
 
     aspects project(':aspects')
-    weave group: 'org.nd4j', name: 'nd4j-context', version: DP4J_VERSION
     weave(group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
         exclude group: 'org.objenesis'
         exclude group: 'net.java.dev.jna'
