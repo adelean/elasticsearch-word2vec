@@ -1,5 +1,5 @@
 group = 'com.adelean'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0-alpha'
 
 def ES_VERSION = '6.5.4'
 def DP4J_VERSION = '1.0.0-beta6'
@@ -24,6 +24,7 @@ buildscript {
         classpath 'gradle.plugin.com.dorongold.plugins:task-tree:1.4'
         classpath 'gradle.plugin.services.bst:weave-dependencies:0.1.5'
         classpath 'org.elasticsearch.gradle:build-tools:6.5.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
 //        classpath 'com.palantir.docker:com.palantir.docker.gradle.plugin:0.24.0'
     }
 }
@@ -33,11 +34,33 @@ apply plugin: 'java'
 apply plugin: 'services.bst.weave-dependencies'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'com.jfrog.bintray'
 //apply plugin: 'com.palantir.docker'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    pkg {
+        repo = 'elasticsearch-word2vec'
+        name = 'elasticsearch-word2vec'
+        userOrg = 'adelean'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/adelean/elasticsearch-word2vec.git'
+        version {
+            name = project.version
+            released  = new Date()
+            vcsTag = 'v' + project.version
+        }
+    }
+    filesSpec {
+        from "build/distributions/word2vec-${project.version}.zip"
+        into "distributions"
+    }
 }
 
 weaveDependencies {
