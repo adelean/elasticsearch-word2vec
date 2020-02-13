@@ -1,5 +1,5 @@
 group = 'com.adelean'
-version = '0.1.0-SNAPSHOT'
+version = '0.2.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -8,7 +8,7 @@ repositories {
 }
 
 apply plugin: 'java'
-apply plugin:'application'
+apply plugin: 'application'
 
 application {
     mainClassName = 'com.adelean.elasticsearch.word2vec.upload.MultiPartOverRest'
@@ -16,6 +16,19 @@ application {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        ModelUploaderPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId 'model-uploader'
+            artifact distTar
+            artifact distZip
+            version project.version
+        }
+    }
 }
 
 dependencies {

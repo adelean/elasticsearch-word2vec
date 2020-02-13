@@ -1,23 +1,20 @@
 language: java
 jdk: openjdk11
 
-before_install:
-    - wget https://services.gradle.org/distributions/gradle-4.10.3-all.zip
-    - unzip -qq gradle-4.10.3-all.zip
-    - export GRADLE_HOME=$PWD/gradle-4.10.3
-    - export PATH=$GRADLE_HOME/bin:$PATH
-    - gradle -v
-    - gradle wrapper
+jobs:
+    include:
+        - stage: build
+          install: skip
+          script: ./gradlew clean build
 
-install:
-    - ./gradlew clean build
-
-#after_success:
-#    - ./gradlew bintrayUpload
+        - stage: publish
+          if: branch = master
+          install: skip
+          script: ./gradlew bintrayUpload
 
 env:
     global:
         # BINTRAY_USER
-        - secure: tB3KyU6XsuNnG1teeyQg4VHOQHmfay8hvv6Wc90P2Dsjiy8GLLZXmFS+vzgWAqKoaxdvAhjVizsF3yhe77G3c+G27jAsQdpBUAwRSOR0CpLfvISBzXYMi2e4BMpp0GXAP3m0vDi85wY5dPkdDLi37TDIRA1WaYvJuCitRxsSHszGXGJOXw9sJnuawx2Z0VbRjRFnCi8xW6LlqJXykw9fDADMVlw03koJTK8Nj1/5ccoOQaiXjWk3Sq1ZkppA1XK/c0TKKOJZuYFrEJPGaN7yiULq4soaQyXsOs6ASG0Sz1nflv5wjLynHXQpwR0JdFNy2baA7hNGbiXecYXUGbVlCDN/bekHYY8023SfGOU6XTo+4X1vVU/Fknwi0GQc3/VpmMKDdDrgOgHty6Kfmb9w896zTgm/Z9hllxO2/FqrlFby2xnaYV6SUMbUqEOsr4q3ufGVYtkv8rySZs8wLU6V02y8ublAL6wCRh4pumCwRPLZw/OVU9S+T2vVSRA9dXzUUjy/yg+t2MH7I00TfLINpeiIJ9oByQPSPQaI/yVieZVeZTRB8DdmFTMjCNmPJmrANEMUWoZaJpK76t2APLu92lDbIEceHk6KI5dhFBhgzQq9c+AtQJbwq5ksDmEJ/atTzpBi5VnRPrP2LQSTh+wjKqGuYqRaP74ce7BV9rpEIJ0=
+        - secure: Awo+2nC6m5iknCnvoXyb1/SlC7HI1hOeeGWwzaenuwkiu+SveqB7HQeM+ANUtbOIGwASSxSszRgMV/fzSkgwP8HycMgVDEBwDSv8CHxVkYyDBgdPJ4frWph1D9hNzvZp/LjNQ1SE28Ugzw7wA87TvuqHzGt+cRcD06oAJQuBcMkMkhF917IgrJKr+UWaf62gv7tpOa8buUgcZl78FmyuQIMHR6bCP7Sq7R7271/ny3Nb1RSm6DYbYlBG41ZDbSdEAOZHz87cEi+2nPJdNwQ040RTGo8E3nBsM3spXwBWVeGGyfIccAQZgubY5g5axAgnGe6x0ep9gs0i3KxX66be4ulZKH4quD4CtrSHZqLu8OooQgfat5yT+4ypXhIe1fzH3zsYf8DalW5SSzB6y+TcTN77w5lch4D351l3RtK7TsC3FH9DcPSfquui48RDjKsCVscqE29MuflVwZaBllEBqtSOE02HZk3xlsknsfJlemMpElrkOPmZU6awzRJhyfQYEC/6elOM+NVAjNiHL3FjGHg1ZHHrmoVqczwSeDFP5V58jF2mG40jF3apfK3z2hXT7KuY/JeM6E0MVp0SJqIXii/Y1ResWmW1MohSpg789duH/9zxV/QVHnyp+pqUWOaUurVmZVTBajM0Z7hHEeXOo9OiKBLzsGA13iX8dtpwCqs=
         # BINTRAY_API_KEY
-        - secure: OZCzGtQhWrwLGSPK+QA54OLH5pyipkvIno78bPuoIWgZ3FOXp3cp8Ojkp3C0ET/AXYhuSFLI1DMgUd0uwVLD7j35vZx4V9KmXx4eBIFEPC7ogJtZ5oTHqqqa/Vpp1fxa1fdFgqgTnaO+vbuN/JbYfb6Dhwjfws+SyRQoRSMdKELHfG1yhgSAAum8s4s5w1pUvrcxJczyLTim01fQ/VIC+YtLo1CWe00X2uuZ6T/CHSlQWsk3qsdMEKQO41DcSuRwigoAHIDAFwSrocEaDofaTognEulJ8DpXzp60UYa2RRxOpsjr4ZroZsfxRRslO4XCGxjav1LCk4GtSlXa8KmqcpYbV1+0P5F10Oz/EtWP/deu2ZsQaJFwJW6+2rRITMHBHHd3ggWPPfRmRWE5bnhizdXKri0iYYsJ6DaUkhwlBq5YNdVLiYn1JgRAplXOLgcBULlhxk90EONDRrjOwImE2yMpjk5zEzJXTxluRPVMw+9F2D6Qysmi+H4vHPJCteV0IBZomvs/rX6XN+rXhBfx4uhN1ydRZuXdKo87OzIP4uF0jWjxlykG2sTksQq17eOYKp2Xj9xQf1lh3OggLJzz6337Np+rjqY/yJvZCpSXGuQwENoQV8QB98cyjHHvNeMF3D4bFq/I/q8zRJxLRHT1ia0yRlcftqgxMVt7fEGaNIk=
+        - secure: aInnZf5Ow53SyY9ZWIL9FvKX49piMLG4c7zNytzTuWIKNH8UrznD5rVUMkz6OmcM+vXtK+i2eLGuQOV3IoUFDnnBsnsbgcjdF1fLyrk3r11dS0DNvPqHmThz9rtGHpBWvaiGIJfZs+Gzz9kR0ac/kl7CUcG2mH+SgAj89wy2hxe6nIsmjB7pi438lrwx9IzM4F0uOzEPsKlJ128rZmHFK8Pnp7URSps47vhB5uC8vT8LHs82XKQXWdSOINYqM8bvh2zyRrRwqNuT7scf3jgd7xdqZNktv1/YBHLyE6omlYdokF7mTHjmN4VO/H4S7X1BooRZkMGAaTCG7HVTJU8/tGfv0uvpJ5GP3rD3E+S9jy1yX82BJojhnucr/nzsrPa7c3o3o1+XQm4CWAcz/fFA+ixWGE+dK9aZXqJIQB/hS4m78+rIQeM7qfF0sPuXQbxGc7Vqvskv6tgCpCnniNRTP0XCRjxBAB7B86snmOFrClMw2IaaPTVNWKb4tRWPXi2MyFiRbFXmWt7JsyeXCrI+esQPfOwhsXimX7ntz/Yry0h/BARo78Nh8X4qpCGCV7mrbYqA8ArBv2LiPWJTfTn50V5y11GdrI4lXKQPYAqIyGW2Dh+JAtY4XcIz4KrjpPhcUme4+CNq2Grt5cUa49UTJ84fpkqdFHOPcAwqIRu1IK0=
