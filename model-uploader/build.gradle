@@ -1,5 +1,5 @@
 group = 'com.adelean'
-version = '0.1.0-SNAPSHOT'
+version = '0.2.0'
 
 repositories {
     mavenCentral()
@@ -8,16 +8,40 @@ repositories {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
+
+application {
+    mainClassName = 'com.adelean.elasticsearch.word2vec.upload.MultiPartOverRest'
+}
 
 test {
     useJUnitPlatform()
 }
 
+publishing {
+    publications {
+        ModelUploaderPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId 'model-uploader'
+            artifact distTar
+            artifact distZip
+            version project.version
+        }
+    }
+}
+
 dependencies {
+    compile group: 'info.picocli', name: 'picocli', version: '4.2.0'
     compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '4.4.2.Final'
     compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider', version: '4.4.2.Final'
+    compile group: 'com.github.tomas-langer', name: 'chalk', version: '1.0.2'
+    compile group: 'com.github.tomas-langer.cli', name: 'cli-progress', version: '1.0.0'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.6.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.0'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
 }
