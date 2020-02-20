@@ -1,4 +1,4 @@
-group = 'com.adelean'
+group = 'com.adelean.word2vec'
 version = '0.3.0-SNAPSHOT'
 
 repositories {
@@ -41,6 +41,20 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+publishing {
+    publications {
+        PluginPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact bundlePlugin
+            groupId project.group
+            artifactId 'elasticsearch-word2vec-plugin'
+            version project.version
+        }
+    }
+}
+
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_API_KEY')
@@ -56,21 +70,7 @@ bintray {
             vcsTag = 'v' + project.version
         }
     }
-    publications = ['BintrayPublication', 'ModelUploaderPublication']
-}
-
-publishing {
-    publications {
-        BintrayPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            artifact bundlePlugin
-            groupId project.group
-            artifactId 'elasticsearch-word2vec-plugin'
-            version project.version
-        }
-    }
+    publications = ['PluginPublication', 'ModelUploaderPublication']
 }
 
 artifactory {
@@ -92,12 +92,7 @@ artifactory {
             password = System.getenv('BINTRAY_API_KEY')
         }
         defaults {
-            publications 'BintrayPublication'//, 'ModelUploaderPublication'
-            properties = [
-                    'bintray.repo': 'p6spy/maven',
-                    'bintray.package': 'p6spy:p6spy',
-                    'bintray.version': project.version.toString()
-            ]
+            publications 'PluginPublication', 'ModelUploaderPublication'
         }
     }
 }

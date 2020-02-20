@@ -1,4 +1,4 @@
-group = 'com.adelean'
+group = 'com.adelean.word2vec'
 version = '0.3.0-SNAPSHOT'
 
 repositories {
