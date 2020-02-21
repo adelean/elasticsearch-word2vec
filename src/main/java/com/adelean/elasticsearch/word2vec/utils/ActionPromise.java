@@ -83,6 +83,26 @@ public class ActionPromise<T> {
         return new ActionPromise<>(listenableActionFuture);
     }
 
+    public <O> ActionPromise<O> then(Function<T, ListenableActionFuture<O>> nextAsyncActionCall) {
+        PlainListenableActionFuture<O> listenableActionFuture = PlainListenableActionFuture.newListenableFuture();
+
+        this.listenableActionFuture.addListener(new ActionListener<T>() {
+            @Override
+            public void onResponse(T response) {
+                nextAsyncActionCall
+                        .apply(response)
+                        .addListener(listenableActionFuture);
+            }
+
+            @Override
+            public void onFailure(Exception failure) {
+                listenableActionFuture.onFailure(failure);
+            }
+        });
+
+        return new ActionPromise<>(listenableActionFuture);
+    }
+
     public ActionPromise<T> then(Runnable nextAsyncActionCall) {
         PlainListenableActionFuture<T> listenableActionFuture = PlainListenableActionFuture.newListenableFuture();
 

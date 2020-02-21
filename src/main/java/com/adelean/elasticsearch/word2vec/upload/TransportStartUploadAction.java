@@ -1,6 +1,8 @@
 package com.adelean.elasticsearch.word2vec.upload;
 
+import com.adelean.elasticsearch.word2vec.utils.ActionPromise;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.HandledTransportAction;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -39,8 +41,10 @@ public final class TransportStartUploadAction extends HandledTransportAction<
             StartUploadAction.StartUploadActionRequest request,
             ActionListener<StartUploadAction.StartUploadActionResponse> listener) {
         String model = request.getModel();
-        UUID uploadId = uploadService.startUpload(model);
-        StartUploadAction.StartUploadActionResponse response = new StartUploadAction.StartUploadActionResponse(uploadId);
-        listener.onResponse(response);
+        ListenableActionFuture<UUID> uploadIdFuture = uploadService.startUpload(model);
+        ActionPromise
+                .promise(uploadIdFuture)
+                .mapResponse(StartUploadAction.StartUploadActionResponse::new)
+                .then(listener);
     }
 }

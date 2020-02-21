@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, ActionPlugin {
     static {
         setNoSubdirProperty();
@@ -93,9 +94,8 @@ public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, Acti
             Environment environment,
             NodeEnvironment nodeEnvironment,
             NamedWriteableRegistry namedWriteableRegistry) {
-        IndexInitializer indexInitializer = new IndexInitializer(clusterService, client);
         ModelLoader modelLoader = new ModelLoader(client);
-        return Arrays.asList(indexInitializer, modelLoader);
+        return Collections.singleton(modelLoader);
     }
 
     /**
