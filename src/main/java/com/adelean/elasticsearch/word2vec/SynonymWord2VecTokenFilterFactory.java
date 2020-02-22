@@ -1,8 +1,8 @@
 package com.adelean.elasticsearch.word2vec;
 
 import com.adelean.elasticsearch.word2vec.model.ModelLoader;
+import com.adelean.elasticsearch.word2vec.model.WordVectorsPluginImpl;
 import org.apache.lucene.analysis.TokenStream;
-import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
@@ -17,6 +17,7 @@ public class SynonymWord2VecTokenFilterFactory extends AbstractTokenFilterFactor
 
     private final String model;
     private final int nearestWords;
+    private final Double threshold;     // 0 <= threshold <= 1
 
     public SynonymWord2VecTokenFilterFactory(
             IndexSettings indexSettings,
@@ -26,12 +27,16 @@ public class SynonymWord2VecTokenFilterFactory extends AbstractTokenFilterFactor
         super(indexSettings, name, settings);
         this.model = settings.get("model");
         this.nearestWords = settings.getAsInt("nearest_words", DEFAULT_NEAREST_WORDS);
+        this.threshold = settings.getAsDouble("threshold", null);
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
         Objects.requireNonNull(model, String.format(ERR_MISSING_MODEL, name()));
-        Word2Vec w2vModel = ModelLoader.getModel(model);
-        return new Word2vecTokenFilter(tokenStream, w2vModel, nearestWords);
+        WordVectorsPluginImpl w2vModel = ModelLoader.getModel(model);
+
+        return threshold != null
+                ? new Word2vecTokenFilter.ByThreshold(tokenStream, w2vModel, threshold)
+                : new Word2vecTokenFilter.NearestWords(tokenStream, w2vModel, nearestWords);
     }
 }
