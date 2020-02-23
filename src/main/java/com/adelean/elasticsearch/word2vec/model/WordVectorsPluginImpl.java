@@ -25,7 +25,7 @@ public final class WordVectorsPluginImpl extends WordVectorsImpl<VocabWord> {
         return baseModel.wordsNearest(word, n);
     }
 
-    public Collection<String> wordsNearest(String word, double threshold) {
+    public Collection<String> wordsNearestThreshold(String word, double threshold) {
         return modelUtils.wordsNearest(Collections.singleton(word), Collections.emptyList(), threshold);
     }
 }

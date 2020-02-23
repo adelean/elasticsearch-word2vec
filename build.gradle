@@ -41,6 +41,15 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+test.enabled = false
+integTestRunner.enabled = false
+
+Task carrotTest = tasks.findByPath('test')
+tasks.register("unitTests", Test) {
+    useJUnitPlatform()
+    classpath = carrotTest.classpath
+}
+
 publishing {
     publications {
         PluginPublication(MavenPublication) {
@@ -155,9 +164,9 @@ thirdPartyAudit.enabled = false
 javadoc.enabled = false
 checkstyleMain.enabled = false
 
-// TODO: write tests and enable
-test.enabled = false
-integTestRunner.enabled = false
+forbiddenPatterns {
+    exclude '**/*.bin'
+}
 
 def transitiveDependenciesGroups = [ 'org.deeplearning4j', 'org.nd4j' ] as String[]
 def mandatoryDependenciesGroups = [ 'org.aspectj' ] as String[]
@@ -318,8 +327,8 @@ dependencies {
         exclude group: 'org.nd4j', module: 'nd4j-context'
     }
 
-    testCompileOnly group: 'org.elasticsearch.test', name: 'framework', version: ES_VERSION
-
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
 }
 
 addImplementationDependencies(project)

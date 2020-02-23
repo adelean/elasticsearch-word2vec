@@ -7,6 +7,10 @@ jobs:
           install: skip
           script: ./gradlew clean build
 
+        - stage: test
+          install: skip
+          script: ./gradlew unitTests
+
         - stage: publish-snapshot
           if: branch = develop
           install: skip

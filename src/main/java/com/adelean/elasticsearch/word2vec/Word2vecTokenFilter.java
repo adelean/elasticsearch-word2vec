@@ -82,7 +82,7 @@ public abstract class Word2vecTokenFilter extends TokenFilter {
         protected List<String> synonyms(String word) {
             return Collections.unmodifiableList(
                     new ArrayList<>(
-                            model.wordsNearest(word, threshold)));
+                            model.wordsNearestThreshold(word, threshold)));
         }
     }
 }
