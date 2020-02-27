@@ -111,9 +111,9 @@ public final class MultiPartOverRest implements Runnable {
             }
         } catch (IOException fileReadException) {
             throw new RuntimeException(fileReadException);
+        } finally {
+            progressBar.end();
         }
-
-        progressBar.end();
     }
 
     private void finishUpload(UUID uploadId) {
