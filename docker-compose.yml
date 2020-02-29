@@ -9,7 +9,7 @@ services:
         volumes:
             - es-data:/usr/share/elasticsearch/data/
         environment:
-            - ES_JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"
 
     kibana:
         image: docker.elastic.co/kibana/kibana:6.5.4
