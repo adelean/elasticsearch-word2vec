@@ -238,3 +238,31 @@ GET /_analyze
   ]
 }
 ```
+
+Another example:
+
+```js
+GET /_analyze
+{
+  "tokenizer": "standard",
+  "filter": [
+    "lowercase",
+    {
+      "type": "stop",
+      "stopwords": "_english_"
+    },
+    {
+      "type": "synonym_word2vec",
+      "model": "GoogleNews-vectors-negative300-SLIM",
+      "threshold": 0.7
+    }
+  ],
+  "text": "Very soon the Rabbit noticed Alice, as she went hunting about, and called out to her
+           in an angry tone"
+}
+
+// Produces tokens: [ very extremely incredibly quite pretty extraordinarily 
+// exceedingly unbelievably soon rabbit rabbits noticed noticing alice
+// she her She went came hunting hunters hunts Hunting hunt about called out
+// her she herself Her angry irate enraged indignant tone ]
+```
