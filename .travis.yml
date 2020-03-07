@@ -12,12 +12,12 @@ jobs:
           script: ./gradlew unitTests
 
         - stage: publish-snapshot
-          if: branch = develop
+          if: branch = master
           install: skip
           script: ./gradlew artifactoryPublish
 
         - stage: publish-release
-          if: branch = master
+          if: branch = releases
           install: skip
           script: ./gradlew bintrayUpload
 
