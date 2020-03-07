@@ -1,7 +1,7 @@
 package com.adelean.elasticsearch.word2vec.model;
 
-import com.adelean.elasticsearch.word2vec.PrivilegedExecutor;
 import com.adelean.elasticsearch.word2vec.utils.ScrollInputStream;
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializerPluginImpl;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
@@ -14,10 +14,12 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivileged;
+
 public final class ModelLoader {
     private static final String MODELS_INDEX = ".word2vec_models_store";
     private static Client client;
-    private static final Map<String, Word2Vec> models = new ConcurrentHashMap<>();
+    private static final Map<String, WordVectorsPluginImpl> models = new ConcurrentHashMap<>();
 
     public ModelLoader(Client client) {
         ModelLoader.client = client;
@@ -27,15 +29,26 @@ public final class ModelLoader {
         return models.containsKey(model);
     }
 
-    public static Word2Vec getModel(String model) {
+    public static WordVectorsPluginImpl getModel(String model) {
         return models.computeIfAbsent(model, ModelLoader::loadModel);
     }
 
-    private static Word2Vec loadModel(String model) {
-        InputStream inputStream = new ModelInputStream(model, client);
-        return PrivilegedExecutor
-                .getInstance()
-                .execute(() -> ModelReader.readAsBinaryNoLineBreaks(inputStream));
+    private static WordVectorsPluginImpl loadModel(String model) {
+        try (InputStream inputStream = new ModelInputStream(model, client)) {
+            return executePrivileged(() -> {
+                Word2Vec word2vec = WordVectorSerializerPluginImpl.readAsBinary(inputStream);
+                return new WordVectorsPluginImpl(word2vec);
+            });
+        } catch (Exception readBinaryException) {
+            try (InputStream inputStream = new ModelInputStream(model, client)) {
+                return executePrivileged(() -> {
+                    Word2Vec word2vec = WordVectorSerializerPluginImpl.readAsBinaryNoLineBreaks(inputStream);
+                    return new WordVectorsPluginImpl(word2vec);
+                });
+            } catch (Exception readModelException) {
+                throw new RuntimeException("Unable to guess input file format. Please use corresponding loader directly");
+            }
+        }
     }
 
     private static final class ModelInputStream extends ScrollInputStream {

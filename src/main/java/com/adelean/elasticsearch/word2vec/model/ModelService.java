@@ -1,5 +1,6 @@
 package com.adelean.elasticsearch.word2vec.model;
 
+import com.adelean.elasticsearch.word2vec.IndexInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ListenableActionFuture;
@@ -27,10 +28,12 @@ public final class ModelService {
     private static final String[] HEADERS = { "Model", "Status", "Parts", "Size" };
 
     private final Client client;
+    private final IndexInitializer indexInitializer;
 
     @Inject
-    public ModelService(Client client) {
+    public ModelService(Client client, IndexInitializer indexInitializer) {
         this.client = client;
+        this.indexInitializer = indexInitializer;
     }
 
     public ListenableActionFuture<Table> modelTable() {
@@ -77,6 +80,10 @@ public final class ModelService {
 
     public void deleteModel(String model) {
         // TODO: code this method
+    }
+
+    public ListenableActionFuture<Void> ensureModelIndexExist() {
+        return indexInitializer.ensureIndexExist(MODEL_STORE_INDEX);
     }
 
     public DeleteByQueryRequestBuilder deleteModelQuery(String model) {

@@ -1,5 +1,5 @@
-group = 'com.adelean'
-version = '0.2.0'
+group = 'com.adelean.word2vec'
+version = '0.3.0'
 
 repositories {
     mavenCentral()
@@ -9,6 +9,11 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'application'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 application {
     mainClassName = 'com.adelean.elasticsearch.word2vec.upload.MultiPartOverRest'

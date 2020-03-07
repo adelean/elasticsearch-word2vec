@@ -1,5 +1,5 @@
-group = 'com.adelean'
-version = '0.2.0'
+group = 'com.adelean.word2vec'
+version = '0.3.0'
 
 repositories {
     mavenCentral()
@@ -28,3 +28,8 @@ ext {
 
 apply plugin: 'java'
 apply plugin: 'aspectj.gradle'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

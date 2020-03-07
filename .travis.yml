@@ -7,7 +7,16 @@ jobs:
           install: skip
           script: ./gradlew clean build
 
-        - stage: publish
+        - stage: test
+          install: skip
+          script: ./gradlew unitTests
+
+        - stage: publish-snapshot
+          if: branch = develop
+          install: skip
+          script: ./gradlew artifactoryPublish
+
+        - stage: publish-release
           if: branch = master
           install: skip
           script: ./gradlew bintrayUpload

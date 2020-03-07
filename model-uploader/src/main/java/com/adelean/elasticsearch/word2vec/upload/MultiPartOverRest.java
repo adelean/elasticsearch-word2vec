@@ -33,7 +33,7 @@ public final class MultiPartOverRest implements Runnable {
             + "@|blue To|@    @|faint :|@ %s";
 
     private static final String MSG_FINISH_UPLOAD = Chalk
-            .on("Model %s was uploaded successfully! Took: %s")
+            .on("Model %s was uploaded successfully! Parts: %d. Took: %s")
             .green()
             .toString();
 
@@ -55,6 +55,7 @@ public final class MultiPartOverRest implements Runnable {
     private UploadApi uploadApi;
     private long fileSizeBytes;
     private long startTimestamp;
+    private long partsCount = 0;
     private UploadProgressBar progressBar;
 
     public static void main(String[] args) {
@@ -99,21 +100,20 @@ public final class MultiPartOverRest implements Runnable {
         progressBar.begin();
 
         ByteBuffer buffer = ByteBuffer.allocate(CHUNK_SIZE);
-        long partNumber = 0;
         long readBytes;
         try (FileChannel fileChannel = FileChannel.open(modelFile)) {
             while ((readBytes = fileChannel.read(buffer)) > 0) {
                 byte[] bytes = buffer.array();
                 UploadApi.Part part = new UploadApi.Part(bytes);
-                uploadApi.storePart(uploadId, partNumber++, part);
+                uploadApi.storePart(uploadId, partsCount++, part);
                 buffer.clear();
                 progressBar.bytesUploaded(readBytes);
             }
         } catch (IOException fileReadException) {
             throw new RuntimeException(fileReadException);
+        } finally {
+            progressBar.end();
         }
-
-        progressBar.end();
     }
 
     private void finishUpload(UUID uploadId) {
@@ -148,6 +148,7 @@ public final class MultiPartOverRest implements Runnable {
         String msg = String.format(
                 MSG_FINISH_UPLOAD,
                 model,
+                partsCount,
                 DurationFormatUtils.formatDurationWords(duration, true, true));
         printAnsi(msg);
     }

@@ -1,0 +1,110 @@
+version: '2.1'
+services:
+    es-master-1:
+        build: .
+        container_name: es-master-1
+        environment:
+            - cluster.name=my-cluster
+            - bootstrap.memory_lock=true
+            - node.master=true
+            - node.data=false
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - master-data-1:/usr/share/elasticsearch/data
+        ports:
+            - 9200:9200
+            - 9300:9300
+            - 11000:8000
+
+    es-master-2:
+        build: .
+        container_name: es-master-2
+        environment:
+            - cluster.name=my-cluster
+            - bootstrap.memory_lock=true
+            - node.master=true
+            - node.data=false
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - "discovery.zen.ping.unicast.hosts=es-master-1"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - master-data-2:/usr/share/elasticsearch/data
+
+    es-master-3:
+        build: .
+        container_name: es-master-3
+        environment:
+            - cluster.name=my-cluster
+            - bootstrap.memory_lock=true
+            - node.master=true
+            - node.data=false
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - "discovery.zen.ping.unicast.hosts=es-master-1"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - master-data-3:/usr/share/elasticsearch/data
+
+    es-data-1:
+        build: .
+        container_name: es-data-1
+        environment:
+            - cluster.name=my-cluster
+            - bootstrap.memory_lock=true
+            - node.master=false
+            - node.data=true
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - "discovery.zen.ping.unicast.hosts=es-master-1"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - data-1:/usr/share/elasticsearch/data
+
+    es-data-2:
+        build: .
+        container_name: es-data-2
+        environment:
+            - cluster.name=my-cluster
+            - bootstrap.memory_lock=true
+            - node.master=false
+            - node.data=true
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - "discovery.zen.ping.unicast.hosts=es-master-1"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - data-2:/usr/share/elasticsearch/data
+
+    kibana:
+        image: 'docker.elastic.co/kibana/kibana:6.5.4'
+        container_name: kibana
+        environment:
+            SERVER_NAME: kibana.local
+            ELASTICSEARCH_URL: http://es-master-1:9200
+        ports:
+            - '5601:5601'
+
+volumes:
+    master-data-1:
+        driver: local
+    master-data-2:
+        driver: local
+    master-data-3:
+        driver: local
+    data-1:
+        driver: local
+    data-2:
+        driver: local

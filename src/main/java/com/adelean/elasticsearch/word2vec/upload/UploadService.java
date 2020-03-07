@@ -1,7 +1,9 @@
 package com.adelean.elasticsearch.word2vec.upload;
 
+import com.adelean.elasticsearch.word2vec.IndexInitializer;
 import com.adelean.elasticsearch.word2vec.model.ModelService;
 import com.adelean.elasticsearch.word2vec.utils.ActionFutures;
+import com.adelean.elasticsearch.word2vec.utils.ActionPromise;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +25,7 @@ import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.threadpool.ThreadPool;
 import org.nd4j.shade.guava.collect.ImmutableMap;
 
 import java.util.Map;
@@ -30,7 +33,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.adelean.elasticsearch.word2vec.model.ModelService.MODEL_STORE_INDEX;
-import static com.adelean.elasticsearch.word2vec.utils.ActionPromise.doAction;
 
 @Singleton
 public final class UploadService {
@@ -42,20 +44,34 @@ public final class UploadService {
     private static final TimeValue MIN_1 = new TimeValue(60000);
 
     private final Client client;
+    private final ThreadPool threadPool;
+    private final IndexInitializer indexInitializer;
     private final ModelService modelService;
     private final Map<UUID, String> uploads = new ConcurrentHashMap<>();
 
     @Inject
-    public UploadService(Client client, ModelService modelService) {
+    public UploadService(
+            Client client,
+            ThreadPool threadPool,
+            IndexInitializer indexInitializer,
+            ModelService modelService) {
         this.client = client;
+        this.threadPool = threadPool;
+        this.indexInitializer = indexInitializer;
         this.modelService = modelService;
     }
 
-    public UUID startUpload(String model) {
-        UUID uploadId = UUID.randomUUID();
-        uploads.put(uploadId, model);
-        LOGGER.info("Starting upload {} for model {}", uploadId, model);
-        return uploadId;
+    public ListenableActionFuture<UUID> startUpload(String model) {
+        ListenableActionFuture<Void> ensureIndexExist = indexInitializer.ensureIndexExist(PART_INDEX);
+        return ActionPromise
+                .promise(ensureIndexExist)
+                .mapResponse(ignored -> {
+                    UUID uploadId = UUID.randomUUID();
+                    uploads.put(uploadId, model);
+                    LOGGER.info("Starting upload {} for model {}", uploadId, model);
+                    return uploadId;
+                })
+                .toFuture();
     }
 
     public ListenableActionFuture<String> storePart(UUID uploadId, long partNumber, String dataBase64) {
@@ -109,9 +125,10 @@ public final class UploadService {
 
         LOGGER.info("Finished upload {} for model {}", uploadId, model);
 
-        doAction(modelService.deleteModelQuery(model))
+        ActionPromise
+                .promise(modelService.ensureModelIndexExist())
                 .then(flushUploadPartsIndex())
-                .then(() -> copyModelParts(model, uploadId))
+                .then(ignored -> copyModelPartsAsync(model, uploadId))
                 .then(deleteUploadPartsQuery(uploadId))
                 .mapResponse((ignored) -> model)
                 .then(future);
@@ -134,6 +151,17 @@ public final class UploadService {
                 .newRequestBuilder(client)
                 .source(PART_INDEX)
                 .filter(QueryBuilders.matchQuery("uploadId", uploadId.toString()));
+    }
+
+    private ListenableActionFuture<Void> copyModelPartsAsync(String model, UUID uploadId) {
+        PlainListenableActionFuture<Void> future = PlainListenableActionFuture.newListenableFuture();
+
+        threadPool.generic().execute(() -> {
+            this.copyModelParts(model, uploadId);
+            future.onResponse(null);
+        });
+
+        return future;
     }
 
     private void copyModelParts(String model, UUID uploadId) {

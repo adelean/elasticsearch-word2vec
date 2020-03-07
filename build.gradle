@@ -1,5 +1,5 @@
-group = 'com.adelean'
-version = '0.2.0'
+group = 'com.adelean.word2vec'
+version = '0.3.0'
 
 repositories {
     mavenCentral()
@@ -41,6 +41,29 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+test.enabled = false
+integTestRunner.enabled = false
+
+Task carrotTest = tasks.findByPath('test')
+tasks.register("unitTests", Test) {
+    useJUnitPlatform()
+    classpath = carrotTest.classpath
+}
+
+publishing {
+    publications {
+        PluginPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact bundlePlugin
+            groupId project.group
+            artifactId 'elasticsearch-word2vec-plugin'
+            version project.version
+        }
+    }
+}
+
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_API_KEY')
@@ -56,21 +79,7 @@ bintray {
             vcsTag = 'v' + project.version
         }
     }
-    publications = ['BintrayPublication', 'ModelUploaderPublication']
-}
-
-publishing {
-    publications {
-        BintrayPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            artifact bundlePlugin
-            groupId project.group
-            artifactId 'elasticsearch-word2vec-plugin'
-            version project.version
-        }
-    }
+    publications = ['PluginPublication', 'ModelUploaderPublication']
 }
 
 artifactory {
@@ -92,12 +101,7 @@ artifactory {
             password = System.getenv('BINTRAY_API_KEY')
         }
         defaults {
-            publications 'BintrayPublication'//, 'ModelUploaderPublication'
-            properties = [
-                    'bintray.repo': 'p6spy/maven',
-                    'bintray.package': 'p6spy:p6spy',
-                    'bintray.version': project.version.toString()
-            ]
+            publications 'PluginPublication', 'ModelUploaderPublication'
         }
     }
 }
@@ -160,9 +164,9 @@ thirdPartyAudit.enabled = false
 javadoc.enabled = false
 checkstyleMain.enabled = false
 
-// TODO: write tests and enable
-test.enabled = false
-integTestRunner.enabled = false
+forbiddenPatterns {
+    exclude '**/*.bin'
+}
 
 def transitiveDependenciesGroups = [ 'org.deeplearning4j', 'org.nd4j' ] as String[]
 def mandatoryDependenciesGroups = [ 'org.aspectj' ] as String[]
@@ -208,7 +212,7 @@ String dequalify(String jarName) {
     String versions = '';
 
     for (token in tokens) {
-        if (token.matches('\\d+\\.\\d+(\\.\\d+)?') || token.matches('(alpha|beta)\\d+')) {
+        if (token.matches('\\d+\\.\\d+(\\.\\d+)?') || token.matches('(alpha|beta|SNAPSHOT)\\d+')) {
             versions += '-' + token
         } else {
             names += (names.isEmpty() ? '' : '-') + token
@@ -323,8 +327,8 @@ dependencies {
         exclude group: 'org.nd4j', module: 'nd4j-context'
     }
 
-    testCompileOnly group: 'org.elasticsearch.test', name: 'framework', version: ES_VERSION
-
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
 }
 
 addImplementationDependencies(project)

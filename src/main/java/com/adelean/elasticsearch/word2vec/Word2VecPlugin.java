@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivileged;
+
+@SuppressWarnings("unused")
 public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, ActionPlugin {
     static {
         setNoSubdirProperty();
@@ -93,19 +96,16 @@ public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, Acti
             Environment environment,
             NodeEnvironment nodeEnvironment,
             NamedWriteableRegistry namedWriteableRegistry) {
-        IndexInitializer indexInitializer = new IndexInitializer(clusterService, client);
         ModelLoader modelLoader = new ModelLoader(client);
-        return Arrays.asList(indexInitializer, modelLoader);
+        return Collections.singleton(modelLoader);
     }
 
     /**
      * Avoid UnsatisfiedLinkError provoked by renaming of .jar files.
      */
     private static void setNoSubdirProperty() {
-        PrivilegedExecutor
-                .getInstance()
-                .execute(() -> {
-                    System.setProperty("org.bytedeco.javacpp.cachedir.nosubdir", "true");
-                });
+        executePrivileged(() -> {
+            System.setProperty("org.bytedeco.javacpp.cachedir.nosubdir", "true");
+        });
     }
 }
