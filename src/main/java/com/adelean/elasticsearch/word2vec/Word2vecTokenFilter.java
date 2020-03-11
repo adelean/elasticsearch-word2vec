@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class Word2vecTokenFilter extends TokenFilter {
     protected final WordVectorsPluginImpl model;
@@ -83,6 +85,45 @@ public abstract class Word2vecTokenFilter extends TokenFilter {
             return Collections.unmodifiableList(
                     new ArrayList<>(
                             model.wordsNearestThreshold(word, threshold)));
+        }
+    }
+
+    public static final class ByRelativeCosineSimilarity extends Word2vecTokenFilter {
+        private final int nearestWords;
+        private final double threshold;
+
+        public ByRelativeCosineSimilarity(
+                TokenStream input,
+                WordVectorsPluginImpl model,
+                int nearestWords,
+                double threshold) {
+            super(input, model);
+            this.nearestWords = nearestWords;
+            this.threshold = threshold;
+        }
+
+        @Override
+        protected List<String> synonyms(String word) {
+            Collection<String> topN = model.wordsNearest(word, nearestWords);
+            return topN
+                    .stream()
+                    .filter(rcsThresholdFilter(word, topN))
+                    .collect(Collectors.toList());
+        }
+
+        Predicate<String> rcsThresholdFilter(String referenceWord, Collection<String> topN) {
+            return testedWord -> relativeCosineSimilarity(referenceWord, testedWord, topN) > threshold;
+        }
+
+        double relativeCosineSimilarity(String word1, String word2, Collection<String> topN) {
+            double cs = model.similarity(word1, word2);
+            double sumCs = 0;
+
+            for (String word : topN) {
+                sumCs += model.similarity(word1, word);
+            }
+
+            return cs / sumCs;
         }
     }
 }
