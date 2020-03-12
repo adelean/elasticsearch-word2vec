@@ -88,7 +88,7 @@ GET /_analyze
       "type": "synonym_word2vec",
       "model": "GoogleNews-vectors-negative300-SLIM",
       "rcs": true,              // activates relative cosine similarity
-      "nearest_words": 20,      // default: 20
+      "nearest_words": 20,      // default: 10
       "threshold": 0.05         // default: (1.0 / nearest_words)
     }
   ],
