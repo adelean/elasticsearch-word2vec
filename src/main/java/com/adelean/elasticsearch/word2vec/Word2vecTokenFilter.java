@@ -41,17 +41,14 @@ public abstract class Word2vecTokenFilter extends TokenFilter {
             synonyms.addAll(syn);
 
             current = captureState();
-
-            return true;
         } else {
             restoreState(current);
 
             String synonym = synonyms.poll();
             termAttr.setEmpty().append(synonym);
             posIncAtt.setPositionIncrement(0);
-
-            return true;
         }
+        return true;
     }
 
     protected abstract List<String> synonyms(String word);
