@@ -11,6 +11,7 @@ import com.adelean.elasticsearch.word2vec.upload.TransportFinishUploadAction;
 import com.adelean.elasticsearch.word2vec.upload.TransportStartUploadAction;
 import com.adelean.elasticsearch.word2vec.upload.TransportStorePartAction;
 import com.adelean.elasticsearch.word2vec.upload.UploadRestHandler;
+
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.client.Client;
@@ -35,6 +36,7 @@ import org.elasticsearch.rest.RestHandler;
 import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.watcher.ResourceWatcherService;
+import org.nd4j.common.config.ND4JClassLoading;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +50,10 @@ import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivi
 @SuppressWarnings("unused")
 public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, ActionPlugin {
     static {
-        setNoSubdirProperty();
+        executePrivileged(() -> {
+            setNoSubdirProperty();
+            setNd4jClassloader();
+        });
     }
 
     @Override
@@ -104,8 +109,10 @@ public final class Word2VecPlugin extends Plugin implements AnalysisPlugin, Acti
      * Avoid UnsatisfiedLinkError provoked by renaming of .jar files.
      */
     private static void setNoSubdirProperty() {
-        executePrivileged(() -> {
-            System.setProperty("org.bytedeco.javacpp.cachedir.nosubdir", "true");
-        });
+        System.setProperty("org.bytedeco.javacpp.cachedir.nosubdir", "true");
+    }
+
+    private static void setNd4jClassloader() {
+        ND4JClassLoading.setNd4jClassloaderFromClass(Word2VecPlugin.class);
     }
 }

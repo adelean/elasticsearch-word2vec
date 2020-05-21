@@ -7,6 +7,8 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -18,6 +20,8 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.adelean.elasticsearch.word2vec.utils.ScrollInputStream;
 
 public final class ModelLoader {
+    private static final Logger LOGGER = LogManager.getLogger(ModelLoader.class);
+
     private static final String MODELS_INDEX = ".word2vec_models_store";
     private static Client client;
     private static final Map<String, WordVectorsPluginImpl> models = new ConcurrentHashMap<>();
@@ -35,6 +39,8 @@ public final class ModelLoader {
     }
 
     private static WordVectorsPluginImpl loadModel(String model) {
+        LOGGER.info("Loading model '{}'...", model);
+
         try (InputStream inputStream = new ModelInputStream(model, client)) {
             return executePrivileged(() -> {
                 Word2Vec word2vec = WordVectorSerializer.readAsBinary(inputStream);

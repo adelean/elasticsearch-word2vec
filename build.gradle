@@ -19,7 +19,6 @@ buildscript {
 
     dependencies {
         classpath 'gradle.plugin.com.dorongold.plugins:task-tree:1.4'
-        classpath 'gradle.plugin.services.bst:weave-dependencies:0.1.5'
         classpath 'org.elasticsearch.gradle:build-tools:6.5.4'
         classpath 'com.vanniktech:gradle-maven-publish-plugin:0.9.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
@@ -29,7 +28,6 @@ buildscript {
 
 apply plugin: 'com.dorongold.task-tree'
 apply plugin: 'java'
-apply plugin: 'services.bst.weave-dependencies'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'maven-publish'
@@ -106,46 +104,6 @@ artifactory {
     }
 }
 
-weaveDependencies {
-    aspectJVersion = '1.9.5'
-    classesToExclude = []
-    ajcXlint = 'ignore'
-}
-
-def aspectsConfig = project.configurations.getByName('aspects')
-def weaveConfig = project.configurations.getByName('weave')
-project.configurations.getByName('compile').setExtendsFrom([])
-project.configurations.getByName('implementation').extendsFrom(aspectsConfig, weaveConfig)
-
-project.afterEvaluate {
-    def preweaveDeps = getDirectPaths(aspectsConfig)
-
-    project.sourceSets.each { SourceSet sourceSet ->
-        sourceSet.runtimeClasspath = sourceSet.runtimeClasspath.filter {
-            !preweaveDeps.contains(it.absolutePath)
-        }
-
-        sourceSets.test.runtimeClasspath = sourceSets.test.runtimeClasspath.filter {
-            !preweaveDeps.contains(it.absolutePath)
-        }
-    }
-
-    def jarHellTask = project.tasks.getByName('jarHell');
-    jarHellTask.classpath = project.sourceSets.test.runtimeClasspath
-}
-
-project.tasks.getByName('bundlePlugin').dependsOn(project.tasks.getByName('jarHell'))
-
-private Set<String> getDirectPaths(Configuration config) {
-    Set<String> depSet = [] as Set
-    config.resolvedConfiguration.firstLevelModuleDependencies.each { ResolvedDependency topDependency ->
-        topDependency.moduleArtifacts.each { ResolvedArtifact artifact ->
-            depSet.add(artifact.file.absolutePath)
-        }
-    }
-    return depSet
-}
-
 ext {
     licenseFile = rootProject.file('LICENSE')
     noticeFile = rootProject.file('NOTICE')
@@ -169,7 +127,6 @@ forbiddenPatterns {
 }
 
 def transitiveDependenciesGroups = [ 'org.deeplearning4j', 'org.nd4j' ] as String[]
-def mandatoryDependenciesGroups = [ 'org.aspectj' ] as String[]
 
 /* Disable compile failure on warnings */
 project.afterEvaluate {
@@ -185,24 +142,12 @@ project.configurations.all({ Configuration configuration ->
     }
 })
 
-Closure isMandatoryDependency = { File file ->
-    def nameParts = file.absolutePath.split('/')
-    return nameParts
-            .find({ part ->
-                mandatoryDependenciesGroups.contains(part)
-            }) != null;
-}
-
 Closure enableTransitive = { Dependency dependency ->
     def isTransitiveDependency = transitiveDependenciesGroups.any(dependency.group.&equalsIgnoreCase)
     if (isTransitiveDependency) {
         // Must be inside 'if' block to not disable transitivity of other dependencies
         dependency.transitive = true
     }
-}
-
-Closure disableTransitive = { Dependency dependency ->
-    dependency.transitive = false
 }
 
 String dequalify(String jarName) {
@@ -224,9 +169,7 @@ String dequalify(String jarName) {
 
 void addImplementationDependencies(Project project) {
     def implementationDependencies = (project.configurations.runtimeClasspath
-            - project.configurations.compileOnly
-            - project.configurations.aspects
-            - project.configurations.weave)
+            - project.configurations.compileOnly)
 
     implementationDependencies
         .forEach { dependency ->
@@ -239,29 +182,11 @@ void addImplementationDependencies(Project project) {
         }
 }
 
-void addMandatoryDependencies(Project project, Closure isMandatoryDependency) {
-    project
-            .configurations
-            .runtimeClasspath
-            .findAll(isMandatoryDependency)
-            .forEach { dependency ->
-                project.bundlePlugin.from(dependency)
-            }
-}
-
-void addWeavedDependencies(Project project) {
-    project.bundlePlugin.from('${project.buildDir}/weaved-libs/weaveDependencies') {
-        include '*.jar'
-    }
-}
-
 project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME).dependencies.all(enableTransitive)
 project.configurations.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).dependencies.all(enableTransitive)
-project.configurations.getByName('aspects').dependencies.all(disableTransitive)
-project.configurations.getByName('weave').dependencies.all(disableTransitive)
 
 def ES_VERSION = '6.5.4'
-def DP4J_VERSION = '1.0.0-beta7'
+def DP4J_VERSION = '1.0.0-M1'
 def OPENBLAS_VERSION = '0.3.7-1.5.2'
 
 dependencies {
@@ -292,7 +217,6 @@ dependencies {
     implementation(group: 'org.nd4j', name: 'nd4j-native-platform', version: DP4J_VERSION) {
         exclude group: 'org.objenesis'
         exclude group: 'net.java.dev.jna'
-        exclude group: 'org.nd4j', module: 'nd4j-api'
         exclude group: 'org.nd4j', module: 'nd4j-native'
 
         exclude group: 'org.bytedeco', module: 'opencv'
@@ -300,32 +224,22 @@ dependencies {
         exclude group: 'org.bytedeco', module: 'mkl-platform'
         exclude group: 'org.bytedeco', module: 'openblas-platform'
     }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION) {
+    implementation(group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7') {
+        exclude group: 'org.nd4j'
         exclude group: 'net.java.dev.jna'
     }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'windows-x86_64') {
+    implementation(group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7', classifier: 'linux-x86_64') {
+        exclude group: 'org.nd4j'
         exclude group: 'net.java.dev.jna'
     }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'linux-x86_64') {
-        exclude group: 'net.java.dev.jna'
-    }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'macosx-x86_64') {
+    implementation (group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
         exclude group: 'net.java.dev.jna'
     }
 
     implementation(group: 'org.bytedeco', name: 'openblas-platform', version: OPENBLAS_VERSION) {
         exclude group: 'org.bytedeco', module: 'openblas'
     }
-    implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'windows-x86_64'
     implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'linux-x86_64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'macosx-x86_64'
-
-    aspects project(':aspects')
-    weave(group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
-        exclude group: 'org.objenesis'
-        exclude group: 'net.java.dev.jna'
-        exclude group: 'org.nd4j', module: 'nd4j-context'
-    }
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.0'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
@@ -333,5 +247,3 @@ dependencies {
 }
 
 addImplementationDependencies(project)
-addWeavedDependencies(project)
-addMandatoryDependencies(project, isMandatoryDependency)

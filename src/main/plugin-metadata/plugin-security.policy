@@ -3,5 +3,6 @@ grant {
     permission java.util.PropertyPermission "*", "read,write";
     permission java.lang.RuntimePermission "loadLibrary.*";
     permission java.lang.RuntimePermission "createSecurityManager";
+    permission java.lang.RuntimePermission "getClassLoader";
     permission java.lang.RuntimePermission "setContextClassLoader";
 };
