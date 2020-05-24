@@ -1,5 +1,7 @@
 package com.adelean.elasticsearch.word2vec.model;
 
+import static com.adelean.elasticsearch.word2vec.PrivilegedExecutor.executePrivileged;
+
 import org.deeplearning4j.models.embeddings.reader.impl.BasicModelUtils;
 import org.deeplearning4j.models.embeddings.reader.impl.PluginModelUtils;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectorsImpl;
@@ -22,15 +24,16 @@ public final class WordVectorsPluginImpl extends WordVectorsImpl<VocabWord> {
 
     @Override
     public Collection<String> wordsNearest(String word, int n) {
-        return baseModel.wordsNearest(word, n);
+        return executePrivileged(() -> baseModel.wordsNearest(word, n));
     }
 
     @Override
     public double similarity(String word, String word2) {
-        return baseModel.similarity(word, word2);
+        return executePrivileged(() -> baseModel.similarity(word, word2));
     }
 
     public Collection<String> wordsNearestThreshold(String word, double threshold) {
-        return modelUtils.wordsNearest(Collections.singleton(word), Collections.emptyList(), threshold);
+        return executePrivileged(() -> modelUtils.wordsNearest(
+                Collections.singleton(word), Collections.emptyList(), threshold));
     }
 }
