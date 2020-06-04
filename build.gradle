@@ -262,7 +262,6 @@ project.configurations.getByName('weave').dependencies.all(disableTransitive)
 
 def ES_VERSION = '6.5.4'
 def DP4J_VERSION = '1.0.0-beta7'
-def OPENBLAS_VERSION = '0.3.7-1.5.2'
 
 dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: ES_VERSION
@@ -275,6 +274,7 @@ dependencies {
         exclude group: 'org.objenesis'
         exclude group: 'net.java.dev.jna'
         exclude group: 'org.nd4j', module: 'nd4j-api'
+        exclude group: 'org.nd4j', module: 'nd4j-native-api'
         exclude group: 'org.nd4j', module: 'nd4j-jackson'
 
         exclude group: 'org.datavec', module: 'datavec-data-image'
@@ -288,37 +288,6 @@ dependencies {
         exclude group: 'org.bytedeco', module: 'hdf5-platform'
         exclude group: 'org.bytedeco', module: 'opencv'
     }
-
-    implementation(group: 'org.nd4j', name: 'nd4j-native-platform', version: DP4J_VERSION) {
-        exclude group: 'org.objenesis'
-        exclude group: 'net.java.dev.jna'
-        exclude group: 'org.nd4j', module: 'nd4j-api'
-        exclude group: 'org.nd4j', module: 'nd4j-native'
-
-        exclude group: 'org.bytedeco', module: 'opencv'
-        exclude group: 'org.bytedeco', module: 'leptonica'
-        exclude group: 'org.bytedeco', module: 'mkl-platform'
-        exclude group: 'org.bytedeco', module: 'openblas-platform'
-    }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION) {
-        exclude group: 'net.java.dev.jna'
-    }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'windows-x86_64') {
-        exclude group: 'net.java.dev.jna'
-    }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'linux-x86_64') {
-        exclude group: 'net.java.dev.jna'
-    }
-    implementation(group: 'org.nd4j', name: 'nd4j-native', version: DP4J_VERSION, classifier: 'macosx-x86_64') {
-        exclude group: 'net.java.dev.jna'
-    }
-
-    implementation(group: 'org.bytedeco', name: 'openblas-platform', version: OPENBLAS_VERSION) {
-        exclude group: 'org.bytedeco', module: 'openblas'
-    }
-    implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'windows-x86_64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'linux-x86_64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: OPENBLAS_VERSION, classifier: 'macosx-x86_64'
 
     aspects project(':aspects')
     weave(group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
