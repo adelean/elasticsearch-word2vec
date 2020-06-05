@@ -289,6 +289,9 @@ dependencies {
         exclude group: 'org.bytedeco', module: 'opencv'
     }
 
+    implementation group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '1.12.0'
+    implementation group: 'org.ojalgo', name: 'ojalgo', version: '48.1.0'
+
     aspects project(':aspects')
     weave(group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION) {
         exclude group: 'org.objenesis'

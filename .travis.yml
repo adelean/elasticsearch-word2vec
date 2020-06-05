@@ -4,12 +4,10 @@ jdk: openjdk11
 jobs:
     include:
         - stage: build
-          if: branch IN (master, releases)
           install: skip
           script: ./gradlew clean build
 
         - stage: test
-          if: branch IN (master, releases)
           install: skip
           script: ./gradlew unitTests
 

@@ -6,7 +6,7 @@ import org.nd4j.linalg.exception.ND4JIllegalStateException;
 import org.nd4j.linalg.factory.Environment;
 import org.nd4j.linalg.factory.Nd4jBackend;
 
-public final class Nd4jJvmBackend extends Nd4jBackend {
+public final class JvmNd4jBackend extends Nd4jBackend {
     private static final ND4JIllegalStateException FORCE_LOAD = new ND4JIllegalStateException();
     private final static String PROPS = "/nd4j-jvm.properties";
 
@@ -32,7 +32,7 @@ public final class Nd4jJvmBackend extends Nd4jBackend {
 
     @Override
     public Resource getConfigurationResource() {
-        return new ClassPathResource(PROPS, Nd4jJvmBackend.class.getClassLoader());
+        return new ClassPathResource(PROPS, JvmNd4jBackend.class.getClassLoader());
     }
 
     @Override

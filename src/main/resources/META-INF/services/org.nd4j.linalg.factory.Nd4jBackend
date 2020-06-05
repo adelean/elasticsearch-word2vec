@@ -1,1 +1,1 @@
-com.adelean.elasticsearch.word2vec.nd4j.Nd4jJvmBackend
+com.adelean.elasticsearch.word2vec.nd4j.JvmNd4jBackend
