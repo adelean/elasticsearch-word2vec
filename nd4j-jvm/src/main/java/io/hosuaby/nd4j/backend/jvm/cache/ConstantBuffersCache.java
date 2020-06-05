@@ -8,32 +8,32 @@ public final class ConstantBuffersCache extends BasicConstantHandler {
 
     @Override
     public DataBuffer getConstantBuffer(boolean[] array, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataBuffer getConstantBuffer(int[] array, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataBuffer getConstantBuffer(long[] array, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataBuffer getConstantBuffer(double[] array, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataBuffer getConstantBuffer(float[] array, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void purgeConstants() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -16,21 +16,21 @@ public final class NDArray extends BaseNDArray {
 
     @Override
     public String getString(long index) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public LongShapeDescriptor shapeDescriptor() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray unsafeDuplication() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray unsafeDuplication(boolean blocking) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

@@ -29,377 +29,377 @@ public final class JvmNDArrayFactory extends BaseNDArrayFactory {
 
     @Override
     public void createBlas() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLevel1() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLevel2() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLevel3() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLapack() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(int[] shape, DataBuffer buffer) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray toFlattened(char order, Collection<INDArray> matrices) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[][] data) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[][] data, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray specialConcat(int dimension, INDArray... toConcat) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray pullRows(INDArray source, int sourceDimension, long[] indexes) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray pullRows(INDArray source, INDArray destination, int sourceDimension, int[] indexes) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shuffle(INDArray array, Random rnd, int... dimension) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shuffle(Collection<INDArray> array, Random rnd, int... dimension) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void shuffle(List<INDArray> array, Random rnd, List<int[]> dimensions) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray average(INDArray target, INDArray[] arrays) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray average(INDArray[] arrays) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray average(Collection<INDArray> arrays) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray accumulate(INDArray target, INDArray... arrays) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray average(INDArray target, Collection<INDArray> arrays) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long rows, long columns, int[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, int[] shape, int[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, char order, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, int[] shape, int[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, long[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(long[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(int[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(short[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(byte[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(boolean[] data, long[] shape, long[] stride, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(List<INDArray> list, int[] shape) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(List<INDArray> list, long[] shape) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(long rows, long columns, long[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray empty(DataType type) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[][] floats) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[][] data, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, int[] shape, int[] stride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer buffer, int[] shape, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(int[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(long[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataType dataType, long[] shape, char ordering, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataType dataType, long[] shape, long[] strides, char ordering, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createUninitialized(int[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createUninitialized(long[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createUninitialized(DataType dataType, long[] shape, char ordering, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createUninitializedDetached(DataType dataType, char ordering, long... shape) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, int[] newShape, int[] newStride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long[] newShape, long[] newStride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long[] newShape, long[] newStride, long offset, long ews, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long[] newShape, long[] newStride, long offset, char ordering, DataType dataType) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, int[] shape, long offset, Character order) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long rows, long columns, int[] stride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, int[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(List<INDArray> list, int[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(List<INDArray> list, long[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, int[] shape, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, int[] shape, int[] stride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, char order, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray convertDataEx(DataTypeEx typeSrc, INDArray source, DataTypeEx typeDst) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public DataBuffer convertDataEx(DataTypeEx typeSrc, DataBuffer source, DataTypeEx typeDst) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void convertDataEx(DataTypeEx typeSrc, DataBuffer source, DataTypeEx typeDst, DataBuffer target) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void convertDataEx(DataTypeEx typeSrc, Pointer source, DataTypeEx typeDst, Pointer target, long length) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void convertDataEx(DataTypeEx typeSrc, Pointer source, DataTypeEx typeDst, DataBuffer buffer) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createFromNpyPointer(Pointer pointer) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createFromNpyHeaderPointer(Pointer pointer) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray createFromNpyFile(File file) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Map<String, INDArray> createFromNpzFile(File file) throws Exception {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Pointer convertToNumpy(INDArray array) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, long[] stride, long offset, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -409,91 +409,91 @@ public final class JvmNDArrayFactory extends BaseNDArrayFactory {
 
     @Override
     public INDArray sort(INDArray x, boolean descending) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray sort(INDArray x, boolean descending, int... dimensions) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray sortCooIndices(INDArray x) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long offset, Character order) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, long offset, Character order) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(double[] data, long[] shape, char ordering) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(Collection<String> strings, long[] shape, char order) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(float[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(long[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(int[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(short[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(byte[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(boolean[] data, long[] shape, long[] stride, char order, DataType dataType, MemoryWorkspace workspace) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, int[] shape) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long[] shape) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, int[] shape, int[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray create(DataBuffer data, long[] shape, long[] stride, long offset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

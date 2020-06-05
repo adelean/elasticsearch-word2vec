@@ -11,17 +11,17 @@ public final class JvmMemoryManager extends BasicMemoryManager {
 
     @Override
     public void release(Pointer pointer, MemoryKind kind) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void memset(INDArray array) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Map<Integer, Long> getBandwidthUse() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

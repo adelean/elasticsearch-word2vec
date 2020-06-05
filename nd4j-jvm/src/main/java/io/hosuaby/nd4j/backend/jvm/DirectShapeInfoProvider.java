@@ -6,6 +6,6 @@ public final class DirectShapeInfoProvider extends BaseShapeInfoProvider {
 
     @Override
     public void purgeCache() {
-
+        throw new UnsupportedOperationException();
     }
 }

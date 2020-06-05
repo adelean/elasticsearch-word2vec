@@ -8,31 +8,31 @@ public final class JvmWorkspaceManager extends BasicWorkspaceManager {
 
     @Override
     protected void pickReference(MemoryWorkspace workspace) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public MemoryWorkspace createNewWorkspace(WorkspaceConfiguration configuration) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public MemoryWorkspace createNewWorkspace() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public MemoryWorkspace createNewWorkspace(WorkspaceConfiguration configuration, String id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public MemoryWorkspace createNewWorkspace(WorkspaceConfiguration configuration, String id, Integer deviceId) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public MemoryWorkspace getWorkspaceForCurrentThread(WorkspaceConfiguration configuration, String id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

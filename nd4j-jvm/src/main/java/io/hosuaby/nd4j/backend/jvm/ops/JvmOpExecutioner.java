@@ -16,41 +16,41 @@ public final class JvmOpExecutioner extends DefaultOpExecutioner {
 
     @Override
     public INDArray exec(Op op) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(Op op, OpContext opContext) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(ReduceOp op) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(Variance accumulation) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(IndexAccumulation op) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(BroadcastOp broadcast) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(ScalarOp op) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public INDArray exec(RandomOp op, Random rng) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
