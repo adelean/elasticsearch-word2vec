@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j;
+package io.hosuaby.nd4j.backend.jvm;
 
 import org.bytedeco.javacpp.BooleanPointer;
 import org.bytedeco.javacpp.BytePointer;

@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j.rng;
+package io.hosuaby.nd4j.backend.jvm.rng;
 
 import org.bytedeco.javacpp.Pointer;
 import org.nd4j.linalg.api.ndarray.INDArray;

@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j.buffer;
+package io.hosuaby.nd4j.backend.jvm.buffer;
 
 import java.nio.ByteBuffer;
 

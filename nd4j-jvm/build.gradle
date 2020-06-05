@@ -1,0 +1,25 @@
+group = 'io.hosuaby'
+version = '0.4.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+apply plugin: 'java'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+def DP4J_VERSION = '1.0.0-beta7'
+
+dependencies {
+    compileOnly group: 'org.nd4j', name: 'nd4j-api', version: DP4J_VERSION
+    compileOnly group: 'org.nd4j', name: 'nd4j-native-api', version: DP4J_VERSION
+    compileOnly group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '1.12.0'
+
+    implementation group: 'org.ojalgo', name: 'ojalgo', version: '48.1.0'
+}

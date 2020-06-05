@@ -1,2 +1,2 @@
 rootProject.name = 'elasticsearch-word2vec'
-include ':aspects', ':model-uploader'
+include ':aspects', ':model-uploader', ':nd4j-jvm'

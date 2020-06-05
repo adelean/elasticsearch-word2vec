@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j.workspace;
+package io.hosuaby.nd4j.backend.jvm.workspace;
 
 import org.nd4j.linalg.api.memory.MemoryWorkspace;
 import org.nd4j.linalg.api.memory.conf.WorkspaceConfiguration;

@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j.ops;
+package io.hosuaby.nd4j.backend.jvm.ops;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.BroadcastOp;

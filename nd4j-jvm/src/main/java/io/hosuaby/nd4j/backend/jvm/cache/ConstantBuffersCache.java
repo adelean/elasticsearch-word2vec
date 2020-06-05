@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j.cache;
+package io.hosuaby.nd4j.backend.jvm.cache;
 
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.buffer.DataType;

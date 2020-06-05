@@ -1,4 +1,4 @@
-package com.adelean.elasticsearch.word2vec.nd4j;
+package io.hosuaby.nd4j.backend.jvm;
 
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.concurrency.BasicAffinityManager;
