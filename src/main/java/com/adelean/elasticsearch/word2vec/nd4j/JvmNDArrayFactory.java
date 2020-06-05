@@ -16,6 +16,17 @@ import org.nd4j.linalg.factory.BaseNDArrayFactory;
 
 public final class JvmNDArrayFactory extends BaseNDArrayFactory {
 
+    public JvmNDArrayFactory() {
+    }
+
+    public JvmNDArrayFactory(DataType dtype, Character order) {
+        super(dtype, order);
+    }
+
+    public JvmNDArrayFactory(DataType dtype, char order) {
+        super(dtype, order);
+    }
+
     @Override
     public void createBlas() {
 
