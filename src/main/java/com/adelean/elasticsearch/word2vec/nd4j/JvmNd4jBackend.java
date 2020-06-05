@@ -12,12 +12,12 @@ public final class JvmNd4jBackend extends Nd4jBackend {
 
     @Override
     public boolean allowsOrder() {
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     @Override
     public int getPriority() {
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     @Override
@@ -27,7 +27,7 @@ public final class JvmNd4jBackend extends Nd4jBackend {
 
     @Override
     public boolean canRun() {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class JvmNd4jBackend extends Nd4jBackend {
 
     @Override
     public Class getNDArrayClass() {
-        throw new UnsupportedOperationException();
+        return NDArray.class;
     }
 
     @Override
@@ -47,6 +47,6 @@ public final class JvmNd4jBackend extends Nd4jBackend {
 
     @Override
     public void logBackendInit() {
-        throw new UnsupportedOperationException();
+        // No additional logging for JVM backend
     }
 }

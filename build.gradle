@@ -298,6 +298,10 @@ dependencies {
         exclude group: 'net.java.dev.jna'
         exclude group: 'org.nd4j', module: 'nd4j-context'
     }
+    implementation(group: 'org.nd4j', name: 'nd4j-native-api', version: DP4J_VERSION) {
+        exclude group: 'org.objenesis'
+        exclude group: 'net.java.dev.jna'
+    }
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.0'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
