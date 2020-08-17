@@ -1,29 +1,27 @@
 package com.adelean.elasticsearch.word2vec.model;
 
+import static com.adelean.inject.resources.core.InjectResources.resource;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Collection;
+
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
-import org.elasticsearch.common.io.PathUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
 public class WordVectorsPluginImplTest {
-    private final Word2Vec TEST_MODEL = testModel();
+    private static final Word2Vec testModel = resource()
+            .withPath("models/word2vec.c.output.model.bin")
+            .asInputStream()
+            .parse(WordVectorSerializer::readAsBinaryNoLineBreaks);
 
     @Test
     @DisplayName("Test get top N nearest words")
     public void testWordsNearestByTopN() {
 
         /* Given */
-        WordVectorsPluginImpl model = new WordVectorsPluginImpl(TEST_MODEL);
+        WordVectorsPluginImpl model = new WordVectorsPluginImpl(testModel);
 
         /* When */
         Collection<String> nearestWords = model.wordsNearest("hot", 5);
@@ -41,7 +39,7 @@ public class WordVectorsPluginImplTest {
     public void testWordsNearestByThreshold() {
 
         /* Given */
-        WordVectorsPluginImpl model = new WordVectorsPluginImpl(TEST_MODEL);
+        WordVectorsPluginImpl model = new WordVectorsPluginImpl(testModel);
 
         /* When */
         Collection<String> nearestWords = model.wordsNearestThreshold("hot", 0.94);
@@ -52,21 +50,5 @@ public class WordVectorsPluginImplTest {
                 .isNotEmpty()
                 .hasSize(2)
                 .containsExactly("dry", "wet");
-    }
-
-    private static Word2Vec testModel() {
-        try {
-            URI uri = ClassLoader
-                    .getSystemClassLoader()
-                    .getResource("models/word2vec.c.output.model.bin")
-                    .toURI();
-            Path path = PathUtils.get(uri);
-            try (InputStream fileInputStream = Files.newInputStream(path)) {
-                return WordVectorSerializer.readAsBinaryNoLineBreaks(fileInputStream);
-            }
-        } catch (Exception modelLoadingException) {
-            fail(modelLoadingException.getMessage());
-            return null;
-        }
     }
 }

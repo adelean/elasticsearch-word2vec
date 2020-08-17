@@ -329,6 +329,7 @@ dependencies {
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.0'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.14.0'
+    testCompile group: 'com.adelean', name: 'inject-resources-core', version: '0.1.0'
 }
 
 addImplementationDependencies(project)
